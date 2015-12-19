@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jss.module.performance.olog</groupId>
+  <artifactId>jss_perf_olog</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  	<name>jss_perf_olog</name>
+	<description>基础框架基于AOP的性能日志记录模块</description>
+	<url>http://www.5ienet.com</url>
+  
+  	<!-- 编译属性 -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.springframework-version>4.0.9.RELEASE</org.springframework-version>
+		<slf4j.version>1.7.2</slf4j.version>
+	</properties>
+	
+	<dependencies>
+		<!-- Spring start -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework-version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>		
+		<!-- Spring end -->
+        <!-- slf4j start-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- slf4j end-->
+
+	</dependencies>
+</project>

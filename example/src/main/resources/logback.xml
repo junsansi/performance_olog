@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 日志组件启动时，打印调试信息，并监控此文件变化，周期60秒 -->
+<configuration scan="true" scanPeriod="60 seconds" debug="true">
+	<!-- 针对jul的性能优化 -->
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+	
+	<!-- 项目名称及日志目录定义 -->
+	<property name="PROJECT_NAME" value="jss_perf_olog_example" />
+	
+	<!-- 记录到控制台，仅用于本地开发 -->
+	<!-- TODO 本地开发环境只需要控制台输出，其他Appender仅作为测试logback配置，后期可删除其他appender -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+	    	<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%15.15thread] %logger{36}:%L - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 性能日志重定向 -->
+	<appender name="PERFORMANCE-LOG"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<file>${catalina.base}/logs/performance.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!--日志文件输出的文件名 -->
+			<FileNamePattern>${catalina.base}/logs/performance-%d{yyyy-MM-dd}.log
+			</FileNamePattern>
+			<MaxHistory>3</MaxHistory>
+			<TimeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<MaxFileSize>100MB</MaxFileSize>
+			</TimeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level
+				%logger{50}.%M - [SMS]: %msg%n</pattern>
+		</layout>
+		<!-- 日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>	
+	<logger name="com.jss.module.performance.olog" level="info" additivity="false">
+		<appender-ref ref="PERFORMANCE-LOG" />  
+	</logger>
+	<!-- 性能日志重定向 end -->	
+    
+	<logger name="org.springframework" level="info" />
+
+	<!-- ===================================================================== -->
+	<!-- Root logger的定义 -->
+	<!-- ===================================================================== -->
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+	</root>
+	
+</configuration>

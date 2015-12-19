@@ -1,5 +1,3 @@
-# performance_olog
-Using Spring interceptor capture function execute infomation!
 
 基于Spring拦截器捕获应用中方法的执行时间。
 
@@ -11,7 +9,7 @@ Using Spring interceptor capture function execute infomation!
 
 2、将applicationContext-aop-perf-log.xml文件置于适当路径
 配置您的工程引用Spring上下文配置文件路径，使其能够加载applicationContext-aop-perf-log.xml中的配置。
-注意，对于applicationContext-aop-perf-log.xml文件来说，也需要进行少许的配置，重点关注pointcut中的配置，用于指定切入的方法，在本例中拦截包名以com.jss.test开头的所有controller
+注意，对于applicationContext-aop-perf-log.xml文件来说，也需要进行少许的配置，重点关注pointcut中的配置，用于指定切入的方法，在本例中拦截包名以com.jss.mongo.example开头的所有controller
 
 3、配置logback，指定日志文件输出路径
 只需要修改日志输出级别和日志文件的保存路径即可。
@@ -19,3 +17,5 @@ Using Spring interceptor capture function execute infomation!
 感兴趣的朋友可以参考example中的调用方式做为参照。
 
 将该目录同步到本地，导出为maven工程即可运行。
+
+

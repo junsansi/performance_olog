@@ -12,10 +12,22 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.springframework-version>4.0.9.RELEASE</org.springframework-version>
-		<slf4j.version>1.7.2</slf4j.version>
+		<slf4j-version>1.7.2</slf4j-version>
+		<junit-version>4.11</junit-version>
+		<ch.qos.logback-version>1.0.9</ch.qos.logback-version>
+		<org.apache.kafka-version>0.8.1</org.apache.kafka-version>
+		<org.apache.commons-version>3.1</org.apache.commons-version>
+		<redis.clients.jedis-version>2.7.2</redis.clients.jedis-version>
 	</properties>
 	
 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+			
 		<!-- Spring start -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -33,15 +45,68 @@
 					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>		
+		</dependency>
 		<!-- Spring end -->
+
         <!-- slf4j start-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <version>${slf4j-version}</version>
         </dependency>
         <!-- slf4j end-->
+
+		<!-- Logback start -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${ch.qos.logback-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${ch.qos.logback-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+			<version>${ch.qos.logback-version}</version>
+		</dependency>
+		<!-- Logback end -->
+
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.9.2</artifactId>
+			<version>${org.apache.kafka-version}</version>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>jmxri</artifactId>
+					<groupId>com.sun.jmx</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jms</artifactId>
+					<groupId>javax.jms</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmxtools</artifactId>
+					<groupId>com.sun.jdmk</groupId>
+				</exclusion>
+		    </exclusions>			
+		</dependency>
+
+	    <dependency>
+	    	<groupId>org.apache.commons</groupId>
+	    	<artifactId>commons-lang3</artifactId>
+	    	<version>${org.apache.commons-version}</version>
+		</dependency>
+		   
+		<!-- jedis start -->
+	    <dependency>
+	    	<groupId>redis.clients</groupId>
+	    	<artifactId>jedis</artifactId>
+	    	<version>${redis.clients.jedis-version}</version>
+		</dependency>   
 
 	</dependencies>
 </project>

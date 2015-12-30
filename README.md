@@ -24,6 +24,7 @@ Using Spring interceptor capture function execute infomation!
 只需要修改日志输出级别和日志文件的保存路径即可(参考example/src/main/resources/logback.xml文件)。
 
 4、配置perf_log.properties文件
+
 该文件主要用于指定日志输出的一些控制参数，包括是否启用、日志采集频率，日志输出路径等等。考虑到记录和分析的便利，目前也支持写向kafka队列或redis。
 
 

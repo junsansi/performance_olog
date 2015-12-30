@@ -12,5 +12,12 @@
 
 	<description>公共配置</description>
 	
-
+	<!-- 默认的服务或组件扫描，使用annotation自动注册bean，处理非Controller的属性 -->
+	<context:component-scan base-package="com.jss.test">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<!-- 定义aspectj -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
 </beans>

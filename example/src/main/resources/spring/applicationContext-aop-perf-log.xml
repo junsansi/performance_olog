@@ -28,8 +28,7 @@
 		<aop:advisor pointcut-ref="allControllerMethods" advice-ref="perfInterceptor" order="2" />
 	</aop:config>
 	
-	<!-- 属性文件配置，暂未使用，后续可考虑在该属性文件中进行个性化配置 -->
+	<!-- 属性文件配置，可考虑在该属性文件中进行个性化配置 -->
+	<context:property-placeholder ignore-resource-not-found="true" location="classpath:/perf_log.properties"/>
 	
-	<context:property-placeholder ignore-resource-not-found="true" location="classpath:/perf_log.properties" />
-
 </beans>

@@ -59,21 +59,45 @@ public class PerfInterceptor implements MethodInterceptor {
 	private String kafkabroker;
 
 	/**
-	 * 指定redis的连接地址
+	 * 指定redis的连接地址和端口，可指定多个地址，格式为ip1:port1,ip2:port2:ip3:port3.....
 	 */
-	@Value("${performance.log.redis.host}")
-	private String redisHost;
+	@Value("${performance.log.redis.hosturi}")
+	private String redisHosts;
 	
 	/**
-	 * 指定redis的连接端口
+	 * kafka工具类
 	 */
-	@Value("${performance.log.redis.port}")
-	private int redisPort;
+	private KafkaProducer kafkaProducer;
+	
+	/**
+	 * 获取kafka工具类实例
+	 */
+	private KafkaProducer getKafkaProducer(){
+		if (kafkaProducer == null){
+			kafkaProducer = new KafkaProducer(kafkatopic, kafkabroker);
+		}
+		return kafkaProducer;
+	}
+	
+	/**
+	 * redis工具类
+	 */
+	private JedisUtil jedisUtil;
+	
+	/**
+	 * 获取redis工具类实例
+	 */
+	private JedisUtil getJedisUtil(){
+		if (jedisUtil == null){
+			jedisUtil = new JedisUtil(redisHosts);
+		}
+		return jedisUtil;
+	}
 	
 	/**
 	 * 被调用方法缓存区
 	 */
-	private static ConcurrentHashMap<String, MethodStats> methodStats = new ConcurrentHashMap<String, MethodStats>();
+	private ConcurrentHashMap<String, MethodStats> methodStats = new ConcurrentHashMap<String, MethodStats>();
 
 	private static final Logger logger = LoggerFactory.getLogger(PerfInterceptor.class);
 
@@ -111,7 +135,7 @@ public class PerfInterceptor implements MethodInterceptor {
 		
 		String message = stats.toString();
 
-		if (!StringUtils.isNotBlank(kafkabroker) && !StringUtils.isNotBlank(redisHost) ) {
+		if (!StringUtils.isNotBlank(kafkabroker) && !StringUtils.isNotBlank(redisHosts) ) {
 			fileDest = "logfile";
 		}
 		// 检查执行频率条件是否满足
@@ -123,15 +147,13 @@ public class PerfInterceptor implements MethodInterceptor {
 				switch (fileDest) {
 				// 输出到kafka
 				case "kafka":
-					KafkaProducer kp = new KafkaProducer(kafkatopic, kafkabroker);
+					KafkaProducer kp = this.getKafkaProducer();
 					kp.sendMsg(message);
-					kp.close();
 					break;
 				// 输出到redis
 				case "redis":
-					JedisUtil jedis = new JedisUtil(redisHost, redisPort);
+					JedisUtil jedis = this.getJedisUtil();
 					jedis.lpush("perfolog", message);
-					jedis.close();
 					break;
 				// 默认输出到日志文件
 				default:
@@ -149,4 +171,20 @@ public class PerfInterceptor implements MethodInterceptor {
 		logger.info(stats.toString()+"  interceptorExecuted time: "+stats.getInterceptorElapsedTime()+" ms.");
 		*/
 	}
+	
+	public void destroy(){
+		try{
+			this.getJedisUtil().close();
+		}catch(Exception ex){
+			logger.error("Destroy jedis error", ex);
+		}
+		
+		try{
+			this.getKafkaProducer().close();
+		}catch(Exception ex){
+			logger.error("Destroy kafkaProducer error", ex);
+		}
+		
+	}
+	
 }

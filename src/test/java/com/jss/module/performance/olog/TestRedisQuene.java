@@ -7,7 +7,7 @@ import com.jss.module.performance.olog.redis.ObjectUtil;
 
 public class TestRedisQuene {
 	private String redisKey = "perfolog";
-	private JedisUtil ju = new JedisUtil("172.16.129.134", 6379);
+	private JedisUtil ju = new JedisUtil("172.16.129.134:6379");
 	
 	public void pushMessage() throws Exception{
 		

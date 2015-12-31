@@ -18,7 +18,7 @@
 	<bean id="performanceMonitor"
 		class="org.springframework.aop.interceptor.PerformanceMonitorInterceptor" />
 
-	<bean id="perfInterceptor" class="com.jss.module.performance.olog.interceptor.PerfInterceptor" />
+	<bean id="perfInterceptor" class="com.jss.module.performance.olog.interceptor.PerfInterceptor" destroy-method="destroy" />
 
 	<aop:config>
 		<aop:pointcut id="allControllerMethods"

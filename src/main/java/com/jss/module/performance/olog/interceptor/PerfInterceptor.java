@@ -47,10 +47,10 @@ public class PerfInterceptor implements MethodInterceptor {
 	private String fileDest;
 
 	/**
-	 * 指定kafka的主题
+	 * 指定日志输出主题或键名，默认值为perfolog
 	 */
-	@Value("${performance.log.kafka.topic}")
-	private String kafkatopic;
+	@Value("${performance.log.topic:perfolog}")
+	private String topic;
 
 	/**
 	 * 指定kafka的连接地址，当broker为空时，destination默认值为logfile
@@ -74,7 +74,7 @@ public class PerfInterceptor implements MethodInterceptor {
 	 */
 	private KafkaProducer getKafkaProducer(){
 		if (kafkaProducer == null){
-			kafkaProducer = new KafkaProducer(kafkatopic, kafkabroker);
+			kafkaProducer = new KafkaProducer(topic, kafkabroker);
 		}
 		return kafkaProducer;
 	}
@@ -134,8 +134,8 @@ public class PerfInterceptor implements MethodInterceptor {
 		}
 		
 		String message = stats.toString();
-
-		if (!StringUtils.isNotBlank(kafkabroker) && !StringUtils.isNotBlank(redisHosts) ) {
+		
+		if (StringUtils.isBlank(kafkabroker) && StringUtils.isBlank(redisHosts)) {
 			fileDest = "logfile";
 		}
 		// 检查执行频率条件是否满足
@@ -143,7 +143,6 @@ public class PerfInterceptor implements MethodInterceptor {
 
 			// 检查执行时间条件是否满足
 			if (methodElapsedTime >= longquerytime) {
-
 				switch (fileDest) {
 				// 输出到kafka
 				case "kafka":
@@ -153,7 +152,7 @@ public class PerfInterceptor implements MethodInterceptor {
 				// 输出到redis
 				case "redis":
 					JedisUtil jedis = this.getJedisUtil();
-					jedis.lpush("perfolog", message);
+					jedis.lpush(topic, message);
 					break;
 				// 默认输出到日志文件
 				default:

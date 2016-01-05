@@ -23,8 +23,8 @@ public class KafkaProducer {
 		props.put("serializer.class", "com.jss.module.performance.olog.kafka.KeywordMessageEncoder");
 		props.put("partitioner.class", "com.jss.module.performance.olog.kafka.TopicPartitioner");
 		props.put("metadata.broker.list", broker);
-		//props.put("producer.type", "async");
-		//props.put("message.send.max.retries", "2");
+		props.put("producer.type", "async");
+		props.put("message.send.max.retries", "3");
 		//props.put("retry.backoff.ms", "300");
 		//0当queue满时丢掉
 		//props.put("queue.enqueue.timeout.ms", "0");

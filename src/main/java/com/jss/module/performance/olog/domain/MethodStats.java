@@ -8,19 +8,23 @@ package com.jss.module.performance.olog.domain;
  */
 public class MethodStats {
 	//完整方法名（含包名）
-	public String methodFullname;
+	private String methodFullname;
 	//方法名
-    public String methodName;
+	private String methodName;
     //拦截方法执行次数
-    public long executedNum;
+	private long executedNum;
 	//拦截方法总执行时间
-    public long totalTime;
+	private long totalTime;
     //拦截方法本次执行时间
-    public long methodElapsedTime;
+	private long methodElapsedTime;
     //拦截器本次执行时间
-    public long interceptorElapsedTime;
+	private long interceptorElapsedTime;
     //拦截方法最大执行时间
-    public long maxTime;
+	private long maxTime;
+	//服务器所在IP
+	private String localIpAddr;
+	//来访IP
+	private String remoteIpAddr;
     
     public MethodStats(String methodFullname) {
         this.methodFullname = methodFullname;
@@ -89,8 +93,23 @@ public class MethodStats {
 
 	@Override
 	public String toString(){
-		return  "Method: " + this.methodFullname + "(), methodExecuted time: " + this.methodElapsedTime + " ms.";
-		
+		return String.format("Method: %s, ServerIP: %s, RequestFrom: %s, ExecutedAt: %s, ElapsedTime: %s ms.", this.methodFullname,this.localIpAddr,this.remoteIpAddr,System.currentTimeMillis(),this.methodElapsedTime);
+	}
+
+	public String getLocalIpAddr() {
+		return localIpAddr;
+	}
+
+	public void setLocalIpAddr(String localIpAddr) {
+		this.localIpAddr = localIpAddr;
+	}
+
+	public String getRemoteIpAddr() {
+		return remoteIpAddr;
+	}
+
+	public void setRemoteIpAddr(String remoteIpAddr) {
+		this.remoteIpAddr = remoteIpAddr;
 	}
 	
 }

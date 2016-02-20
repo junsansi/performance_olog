@@ -18,6 +18,7 @@
 		<org.apache.kafka-version>0.8.1</org.apache.kafka-version>
 		<org.apache.commons-version>3.1</org.apache.commons-version>
 		<redis.clients.jedis-version>2.7.2</redis.clients.jedis-version>
+		<javax.servlet-version>2.5</javax.servlet-version>
 	</properties>
 	
 	<dependencies>
@@ -29,6 +30,11 @@
 		</dependency>
 			
 		<!-- Spring start -->
+	    <dependency>
+	    	<groupId>javax.servlet</groupId>
+	    	<artifactId>servlet-api</artifactId>
+	    	<version>${javax.servlet-version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>

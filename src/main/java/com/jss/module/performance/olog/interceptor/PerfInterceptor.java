@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import com.jss.module.performance.olog.domain.MethodStats;
 import com.jss.module.performance.olog.kafka.KafkaProducer;
 import com.jss.module.performance.olog.redis.JedisUtil;
+import com.jss.module.performance.olog.utils.IpAddrUtil;
 
 /**
  * 基于AOP拦截指定类型的方法，基于SLF4J输出类包、方法名及方法执行时间
@@ -67,7 +68,7 @@ public class PerfInterceptor implements MethodInterceptor {
 	/**
 	 * kafka工具类
 	 */
-	private KafkaProducer kafkaProducer;
+	private static KafkaProducer kafkaProducer;
 	
 	/**
 	 * 获取kafka工具类实例
@@ -82,7 +83,7 @@ public class PerfInterceptor implements MethodInterceptor {
 	/**
 	 * redis工具类
 	 */
-	private JedisUtil jedisUtil;
+	private static  JedisUtil jedisUtil;
 	
 	/**
 	 * 获取redis工具类实例
@@ -100,30 +101,48 @@ public class PerfInterceptor implements MethodInterceptor {
 	private ConcurrentHashMap<String, MethodStats> methodStats = new ConcurrentHashMap<String, MethodStats>();
 
 	private static final Logger logger = LoggerFactory.getLogger(PerfInterceptor.class);
+	
+	//获取本地IP地址
+	private static String localIpAddr;
+	private String getLocalIpAddr(){
+		if (localIpAddr == null){
+			localIpAddr =  IpAddrUtil.getLocalIp();
+		}
+		return localIpAddr;
+	}
 
 	public Object invoke(MethodInvocation method) throws Throwable {
+		//被拦截方法开始时间
 		long methodStarttime = System.currentTimeMillis();
 		
 		try {
 			return method.proceed();
 		} finally {
 			if (isOpen == 1) {
-				updateStats(method.getMethod().getDeclaringClass().getName(), method.getMethod().getName(), methodStarttime);
+				updateStats(method,  methodStarttime);
 			}
 		}
 	}
 
-	private void updateStats(String methodClass, String methodName, long methodStarttime) {
+	private void updateStats(MethodInvocation method, long methodStarttime) {
+
 		long methodElapsedTime = System.currentTimeMillis() - methodStarttime;
+		
+		String methodClass = method.getMethod().getDeclaringClass().getName();
+		String methodName = method.getMethod().getName();
 		String methodFullname = methodClass + "." + methodName;
+		
 		MethodStats stats = methodStats.get(methodFullname);
 		if (stats == null) {
+			
 			stats = new MethodStats(methodFullname);
 			stats.setExecutedNum(1);
 			stats.setMethodElapsedTime(methodElapsedTime);
 			stats.setMaxTime(methodElapsedTime);
 			stats.setTotalTime(methodElapsedTime);
 			stats.setMethodName(methodName);
+			stats.setLocalIpAddr(this.getLocalIpAddr());
+			//stats.setRemoteIpAddr(remoteIpAddr);   //目前考虑到性能，暂不记录该属性，如有必要，可以通过request获取来访IP地址
 			
 			methodStats.put(methodFullname, stats);
 		}else{

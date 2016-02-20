@@ -25,9 +25,14 @@ public class KafkaProducer {
 		props.put("metadata.broker.list", broker);
 		props.put("producer.type", "async");
 		props.put("message.send.max.retries", "3");
-		//props.put("retry.backoff.ms", "300");
-		//0当queue满时丢掉
-		//props.put("queue.enqueue.timeout.ms", "0");
+		props.put("retry.backoff.ms", "300");
+		
+		//异步模式时，缓冲数据的最大时间
+		props.put("queue.buffering.max.ms", 1000);
+		//异步模式时，缓存的最大消息数量
+		props.put("queue.buffering.max.messages", 3000);
+		//如果值为0则立即清空队列，消息被抛弃
+		props.put("queue.enqueue.timeout.ms", "3");
 		
 		ProducerConfig config = new ProducerConfig(props);
 		producer = new Producer<Integer, String>(config);
